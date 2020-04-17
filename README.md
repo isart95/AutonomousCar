@@ -7,11 +7,9 @@
 **Provisional Architecture:**
 
   1.  Supervisor (Guidance, Navigation)
-
-    * Path planning & Trajectory generation modul:
-    * Event handling
-    * Energy management and monitoring (Energy budget)
-
+      * Path planning & Trajectory generation modul:
+      * Event handling
+      * Energy management and monitoring (Energy budget)
         * Initial & final configuration
         * Set of intermediate configurations to guide the path through specific regions
         * Set of locations where specific events will happen
@@ -29,13 +27,13 @@
   4.  Graphical interface ()
 
 
--   Inputs:
+-   **Inputs**:
 
     1.  Pose of the car (x,y,theta)
     2.  Linear velocity of the car (v at time = t)
     3.  Angular position of the steering wheel (phi at time = t)
 
--   Outputs:
+-   **Outputs**:
     1.  Final pose of the car (x,y,theta) at final time (t + diff(t))
 
 *Car knows its configuration within a pre-specified error.*
