@@ -4,7 +4,7 @@
 
 *-Project developed in Python - ROS - (Gazebo/RViz)-*
 
-## Provisional Architecture:
+### Provisional Architecture:
 
   1.  Supervisor (Guidance, Navigation)
       * Path planning & Trajectory generation modul:
@@ -38,13 +38,11 @@
 
 *Car knows its configuration within a pre-specified error.*
 
-===============================================================================
 
-## Outcome:
+### Outcome:
 Zip/rar file containing all the software developed, tests ran, and adequate pdf
 documentation explaining, clearly, the project and how to use the software.
 
-===============================================================================
 
 ## Authors:
 
@@ -52,7 +50,6 @@ documentation explaining, clearly, the project and how to use the software.
 - Veronica Spelbrink
 - Isart Julià
 
-===============================================================================
 
 ## Tasks:
 - [] Set meeting with teacher for Monday 20/04
