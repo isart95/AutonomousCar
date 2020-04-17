@@ -7,9 +7,9 @@
 **Provisional Architecture:**
 
   1.  Supervisor (Guidance, Navigation)
-    a.  Path planning & Trajectory generation modul:
-    c.  Event handling
-    d.  Energy management and monitoring (Energy budget)
+    * Path planning & Trajectory generation modul:
+    *   Event handling
+    *   Energy management and monitoring (Energy budget)
 
         -Initial & final configuration
         -Set of intermediate configurations to guide the path through specific regions
@@ -18,12 +18,12 @@
 
 
   2.  Motion control
-    a.  Model of the car and the kinematics
-        -Allow the car to move between any two arbitrary configurations (initial and final pose)
-        -Only points in traffic roads are admissible
+    * Model of the car and the kinematics
+        * Allow the car to move between any two arbitrary configurations (initial and final pose)
+        * Only points in traffic roads are admissible
 
   3.  Localization (¿? -> Ask teacher)
-    a.  Apply Gaussian error to wheel sensors
+    *   Apply Gaussian error to wheel sensors
 
   4.  Graphical interface ()
 
