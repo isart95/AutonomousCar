@@ -1,10 +1,10 @@
 # AutonomousCar
 
-Simulation of an autonomous car in IST (Lisboa)
+**Simulation of an autonomous car in IST (Lisboa)**
 
 Project developed in Python - ROS - (Gazebo/RViz)
 
-Provisional Architecture:
+**Provisional Architecture:**
 
   1.  Supervisor (Guidance, Navigation)
     a.  Path planning & Trajectory generation modul:
@@ -37,9 +37,22 @@ Provisional Architecture:
 -   Outputs:
     1.  Final pose of the car (x,y,theta) at final time (t + diff(t))
 
--Car knows its configuration within a pre-specified error.
+*Car knows its configuration within a pre-specified error.*
 
-======================================
-Outcome:
+==============================================================================
+**Outcome:**
 Zip/rar file containing all the software developed, tests ran, and adequate pdf
 documentation explaining, clearly, the project and how to use the software.
+===============================================================================
+
+**Authors**:
+
+- Pethros Tzathas
+- Veronica Spelbrink
+- Isart Julià
+
+==========
+**Tasks**:
+- [] Set meeting with teacher for Monday 20/04
+- [] Meeting on 20/04 - *Clearfy architechture*
+- []
