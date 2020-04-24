@@ -1,0 +1,27 @@
+<package>
+  <name>autonomous_car</name>
+  <version>0.0.0</version>
+
+  <description>This package contains the simulation of an Autonomous Car</description>
+  <author email="isartjulia@gmail.com">Isart Julià</author>
+  <author email="nikki_ris@hotmail.com">Veronica Spelbrink</author>
+  <author email="tzathaspet@gmail.com">Petros Tzathas</author>
+  <maintainer email="isartjulia@gmail.com">Isart Julià</maintainer>
+  <maintainer email="nikki_ris@hotmail.com">Veronica Spelbrink</maintainer>
+  <maintainer email="tzathaspet@gmail.com">Petros Tzathas</maintainer>
+
+
+  <license>BSD</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>joint_state_publisher_gui</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>xacro</run_depend>
+  <run_depend>rospy</run_depend>
+
+</package>
