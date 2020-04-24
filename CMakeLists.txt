@@ -7,7 +7,10 @@ project(autonomous_car)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  rospy
+  geometry_msgs
+  tf)
 catkin_package()
 
 if(CATKIN_ENABLE_TESTING)
