@@ -1,0 +1,10 @@
+# Define the goal
+float32 x_goal
+float32 y_goal
+float32 theta_goal
+---
+# Define the result
+bool correct
+---
+# Define a feedback message
+float32 percent_complete

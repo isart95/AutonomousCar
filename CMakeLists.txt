@@ -8,9 +8,14 @@ project(autonomous_car)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  genmsg
+  actionlib_msgs
   rospy
   geometry_msgs
-  tf)
+  tf
+  message_generation
+)
+
 catkin_package()
 
 if(CATKIN_ENABLE_TESTING)
@@ -67,22 +72,25 @@ endif()
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
+ add_service_files(
+   FILES
+   robot.srv
 #   Service2.srv
 # )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
+ add_action_files(
+	DIRECTORY
+	action   
+	FILES
+	navigation.action
 #   Action2.action
-# )
+ )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
+ generate_messages(
+   DEPENDENCIES
+	geometry_msgs
 #   std_msgs  # Or other packages containing msgs
 # )
 
