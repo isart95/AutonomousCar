@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
-catkin_package()
+
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslaunch REQUIRED)
@@ -72,27 +72,28 @@ endif()
 # )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   robot.srv
+ #add_service_files(
+#   FILES
 #   Service2.srv
 # )
 
 ## Generate actions in the 'action' folder
  add_action_files(
 	DIRECTORY
-	action   
+	src/actions   
 	FILES
 	navigation.action
 #   Action2.action
  )
 
 ## Generate added messages and services with any dependencies listed here
+## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
 	geometry_msgs
-#   std_msgs  # Or other packages containing msgs
-# )
+	actionlib_msgs
+	std_msgs  # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
