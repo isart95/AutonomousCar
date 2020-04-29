@@ -1,0 +1,6 @@
+free_thresh: 0.196
+image: room.pgm
+negate: 0
+occupied_thresh: 0.65
+origin: [-3.549999999999999, -3.2, 0.0]
+resolution: 0.05

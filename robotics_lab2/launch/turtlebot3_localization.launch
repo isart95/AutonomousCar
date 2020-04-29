@@ -1,0 +1,36 @@
+<launch>
+  <!-- Disable if running online and not from a bag/using gazebo simulation -->
+  <param name="use_sim_time" value="true"/>
+
+  <!-- Arguments -->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="map_file" default="$(find my_amcl)/maps/disc_map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- Turtlebot3 -->
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="$(arg model)"/>
+  </include>
+
+  <!-- Adding the my_map tf to the tf tree-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="my_map_to_map" args="0 0 0 0 0 0 1 /disc_map /map "/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find my_amcl)/rviz/my_amcl.rviz"/>
+  </group>
+
+  <!-- AMCL -->
+  <include file="$(find my_amcl)/launch/amcl.launch"/>
+
+  <!-- Call to global_localization service -->
+  <node name="global_localization" pkg="rosservice" type="rosservice"  args="call --wait /global_localization"/>
+
+  <!-- move_square - used to localize the robot before running move_base and giving the goals -->
+  <node name="move_square" pkg="my_amcl" type="move_square.py" output="screen"/>
+  
+</launch>
