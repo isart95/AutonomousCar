@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   tf
   message_generation
+  nav_msgs
 )
 
 
