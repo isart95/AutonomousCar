@@ -11,6 +11,7 @@ from geometry_msgs.msg import PoseStamped, PoseArray
 from nav_msgs.msg import Path
 
 class MoveBaseClient():
+
 	def __init__(self):
 		rospy.init_node('move_base_client')
 

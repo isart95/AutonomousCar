@@ -52,6 +52,19 @@ documentation explaining, clearly, the project and how to use the software.
 
 
 ## Tasks:
-- [] Set meeting with teacher for Monday 20/04
-- [] Meeting on 20/04 - *Clearfy architechture*
-- []
+- [x] Set meeting with teacher for Monday 20/04
+- [x] Meeting on 20/04 - *Clearfy architechture*
+- [] Odometry [Petros]
+	* Reads the rotation of the wheels and adds gaussian noise/error
+	* Transforms to base_link frame and then to world frame/map and sends to move_base
+-[] Base controller [isart]
+	*Receives the cmd_vel of move base and transform it to rotations of the wheels
+	*Publishes the rotation of the wheels and steering (joint_state_publisher)
+	*Publish the whole movement¿?
+
+-[] Event handle:
+	*Event publisher
+	*Event control -> listen event publisher -> acts (stopping... ?? 
+
+- [] Energy Management:
+	*lets see
