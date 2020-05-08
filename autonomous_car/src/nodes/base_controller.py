@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist, Vector3
 from std_msgs.msg import Float64
+from sensor_msgs.msg import JointState
 import math
-from math import sin, cos, pi, atan, acos
+from math import sin, cos, pi, atan, acos, asin, sqrt
 import tf
 from tf import TransformListener
 from tf.transformations import euler_from_quaternion
@@ -19,6 +20,7 @@ class Robot():
         rospy.loginfo("-I- %s started" % self.nodename)
 
         # Define publishers of velocity and angle
+        self.control_vel_pub = rospy.Publisher('control_cmd_vel', Twist, queue_size=50)
         self.bWheels_pub = rospy.Publisher('bWheels', Float64, queue_size=50)
         self.sWheel_vel_pub = rospy.Publisher('sVelWheel', Float64, queue_size=50)
         self.sWheel_angle_pub = rospy.Publisher('sWheel', Float64, queue_size=50)
@@ -54,6 +56,9 @@ class Robot():
             # subscribe to twist message
             rospy.Subscriber("cmd_vel", Twist, self.twistCallback)
 
+            # subscribe to twist message
+            rospy.Subscriber("steering_state", JointState, self.phiCallback)
+
             #get orientation robot
             self.getTheta()
 
@@ -61,6 +66,9 @@ class Robot():
             self.calculate_publish()
 
             r.sleep()
+
+    def phiCallback(self, msg):
+        self.phi = msg.position[0]
 
     def twistCallback(self, data):
 
@@ -82,7 +90,7 @@ class Robot():
         while not transformation:
             try:
                 t = self.tf_listener.getLatestCommonTime("/body_link", "/map")
-                (trans, quaternion)= self.tf_listener.lookupTransform("/body_link", "/map", t)
+                (_trans, quaternion)= self.tf_listener.lookupTransform("/body_link", "/map", t)
                 self.th = euler_from_quaternion(quaternion)[2]
                 transformation = True
             except (tf.LookupException, tf.ConnectivityException):
@@ -90,15 +98,23 @@ class Robot():
 
     def calculate_publish(self):
 
-        self.bwheels = self.xVel/cos(self.th)
-        self.phi = atan((self.thVel/self.bwheels)*self.L)
+        self.bwheels = self.xVel
+        #self.phi = atan((self.thVel/self.bwheels)*self.L)
 
         # The phi velocity, or steering angle vel, doesnt change the behaviour
         # of the car, just how fast goes to the desired angle this wheel
         # So I choose it (I guess it has to be enough quick to permit the normal movement of the car)
         # Maybe we have to check previous time step with this one, and integrate position to get velocity??
 
-        self.phiVel = 0.5
+        t = self.thVel / (self.xVel * self.L)
+        if t > 1:
+            t = 1
+        if t < -1:
+            t = -1
+
+        targetPhi = asin(t)
+        Kp = 1
+        self.phiVel = Kp * (targetPhi - self.phi)
 
         # Test info:
         rospy.loginfo("\n \n --------------------------------------------------------")
@@ -107,6 +123,11 @@ class Robot():
         rospy.loginfo("The velocity of the motors is: %s and the steering angle: %s", self.bwheels, self.phi)
 
         # Publish motor commands
+        self.control_vel_pub.publish(
+            Twist(
+                Vector3(self.bwheels, 0, 0),
+                Vector3(0, 0, self.phiVel))
+            )
         self.bWheels_pub.publish(self.bwheels)
         self.sWheel_vel_pub.publish(self.phiVel)
         self.sWheel_angle_pub.publish(self.phi)

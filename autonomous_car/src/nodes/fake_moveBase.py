@@ -7,7 +7,7 @@ if __name__ == '__main__':
         # Starts a new node
         rospy.init_node('fakeMoveBase', anonymous=True)
         moveBase_pub = rospy.Publisher('cmd_vel', Twist, queue_size=50)
-        twist = Twist(Vector3(1, 1, 0), Vector3(0, 0, 0.1))
+        twist = Twist(Vector3(1, 0, 0), Vector3(0, 0, 1))
         r = rospy.Rate(60)
         while not rospy.is_shutdown():
             moveBase_pub.publish(twist)

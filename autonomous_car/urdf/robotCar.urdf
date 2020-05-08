@@ -47,7 +47,7 @@
   <joint name="body_to_steering_point" type="continuous">
     <parent link="body_link"/>
     <child link="steering_point"/>
-    <axis xyz="1 0 0"/>
+    <axis xyz="0 0 1"/>
     <origin xyz="2.2 0 0"/>
   </joint>
 

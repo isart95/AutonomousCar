@@ -6,7 +6,7 @@ if __name__ == '__main__':
     try:
         # Starts a new node
         rospy.init_node('odometry_test', anonymous=True)
-        steering_pub = rospy.Publisher('steering_cmd_vel', Twist, queue_size=50)
+        steering_pub = rospy.Publisher('control_cmd_vel', Twist, queue_size=50)
         
         twist = Twist(Vector3(1, 0, 0), Vector3(0, 0, 0.5))
 

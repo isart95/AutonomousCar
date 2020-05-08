@@ -1,12 +1,14 @@
 <launch>
   <arg name="model" default="$(find autonomous_car)/urdf/robotCar.urdf"/>
-  <arg name="rvizconfig" default="$(find autonomous_car)/rviz/urdf.rviz" />
+  <arg name="rvizconfig" default="$(find autonomous_car)/rviz/urdf.rviz"/>
   
-  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
-
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+  
   <node name="odometry_publisher" pkg="autonomous_car" type="odom_publisher.py" />
   <node name="odometry_tester" pkg="autonomous_car" type="odometry_driver_test.py" />
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">["steering_state"]</rosparam>
+  </node>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 </launch>
