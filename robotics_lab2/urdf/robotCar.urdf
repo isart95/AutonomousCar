@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="autonomous_car">
+<robot name="myfirst">
 
   <material name="blue">
     <color rgba="0 0 0.8 1"/>
@@ -9,12 +9,20 @@
     <color rgba="1 1 1 1"/>
   </material>
 
-  <link name="body_link">
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+    <origin xyz="220 183.41 0" rpy="0 0 1.57075"/>
+  </joint>
+
+  <link name="base_link">
     <visual>
-      <geometry>
-        <box size="3.332 1.28 1.7"/>
-      </geometry>
       <origin xyz="1.1 0 0.85"/>
+      <geometry>
+        <box size="3.332 1.28 1.5"/>
+      </geometry>
       <material name="white"/>
     </visual>
   </link>
@@ -22,7 +30,7 @@
   <link name="front_wheel">
     <visual>
       <geometry>
-        <cylinder length="0.35" radius="0.25"/>
+        <cylinder length="0.114" radius="0.256"/>
       </geometry>
       <material name="blue">
         <color rgba="0 0 0 1.0"/>
@@ -35,26 +43,26 @@
 
   <link name="back_left_wheel">
     <visual>
+      <origin xyz="0 0 0.057"/>
       <geometry>
-        <cylinder length="0.35" radius="0.25"/>
+        <cylinder length="0.114" radius="0.256"/>
       </geometry>
-      <origin xyz="0 0 0.175"/>
       <material name="blue"/>
     </visual>
   </link>
 
   <link name="back_right_wheel">
     <visual>
+      <origin xyz="0 0 0.057"/>
       <geometry>
-        <cylinder length="0.35" radius="0.25"/>
+        <cylinder length="0.114" radius="0.256"/>
       </geometry>
-      <origin xyz="0 0 -0.175"/>
       <material name="blue"/>
     </visual>
   </link>
 
   <joint name="body_to_steering_point" type="continuous">
-    <parent link="body_link"/>
+    <parent link="base_link"/>
     <child link="steering_point"/>
     <axis xyz="0 0 1"/>
     <origin xyz="2.2 0 0"/>
@@ -68,15 +76,15 @@
   </joint>
 
 
-  <joint name="body_to_back_left_wheel" type="continuous">
-    <parent link="body_link"/>
+  <joint name="base_to_back_left_wheel" type="continuous">
+    <parent link="base_link"/>
     <child link="back_left_wheel"/>
     <axis xyz="0 0 1"/>
-    <origin xyz="0 -0.64 0" rpy="-1.57075 0 0"/>
+    <origin xyz="0 -0.64 0" rpy="1.57075 0 0"/>
   </joint>
 
-  <joint name="body_to_back_right_wheel" type="continuous">
-    <parent link="body_link"/>
+  <joint name="base_to_back_right_wheel" type="continuous">
+    <parent link="base_link"/>
     <child link="back_right_wheel"/>
     <axis xyz="0 0 1"/>
     <origin xyz="0 0.64 0" rpy="-1.57075 0 0"/>

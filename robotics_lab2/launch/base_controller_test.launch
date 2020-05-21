@@ -3,43 +3,61 @@
   <param name="use_sim_time" value="false"/>
 
   <!-- Arguments -->
-  <arg name="model" default="$(find robotics_lab2)/urdf/aut_car.urdf"/>
-  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="open_rviz" default="true"/>
+  <!--Car model-->
+  <arg name="file1" default="robotCar.urdf"/>
+  <arg name="file2" default="aut_car.urdf"/>
+  <arg name="model" default="$(find robotics_lab2)/urdf/$(arg file1)"/>
+  
+  <!--Map server -->
+  <arg name="map_file1" default="$(find robotics_lab2)/maps/IST_map_disc.yaml"/>
+  <arg name="map_file2" default="$(find robotics_lab2)/maps/blank.yaml"/>
+  
+  <!--Move_base Args-->
+  <arg name="no_static_map" default="false"/>
+  <arg name="base_global_planner" default="navfn/NavfnROS"/>
+  <arg name="base_local_planner" default="dwa_local_planner/DWAPlannerROS"/>
+  <!-- <arg name="base_local_planner" default="base_local_planner/TrajectoryPlannerROS"/> -->
+  <arg name="cmd_vel_topic" default="/control_cmd_vel" />
   <arg name="odom_topic" default="/odom" />
   <arg name="move_forward_only" default="false"/>
 
-  <arg name="map_file" default="$(find robotics_lab2)/maps/IST_map_disc.yaml"/>
-  <arg name="open_rviz" default="true"/>
+  
 
   <!--Robot Model Initialization--> 
   <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <rosparam param="source_list">["steering_state"]</rosparam>
-  </node>
+  
 
    <!-- Adding the my_map tf to the tf tree-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="my_map_to_map" args="0 0 0 0 0 0 1 /disc_map /map "/>
 
   <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file1)"/>
 
   <!--Navigation--> 
   <!-- The move_base node -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" clear_params="true" output="screen">
 
-    <param name="base_global_planner" value="global_planner/GlobalPlanner" />
-    <param name="GlobalPlanner/use_dijkstra" value="true" />
-    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <param name="base_global_planner" value="$(arg base_global_planner)"/>
+    <param name="base_local_planner" value="$(arg base_local_planner)"/>  
+    <rosparam file="$(find robotics_lab2)/param/planner.yaml" command="load"/>
 
-    <rosparam file="$(find robotics_lab2)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find robotics_lab2)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <!-- observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find robotics_lab2)/param/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find robotics_lab2)/param/costmap_common.yaml" command="load" ns="local_costmap" />
+
+    <!-- local costmap, needs size -->
+    <rosparam file="$(find robotics_lab2)/param/costmap_local.yaml" command="load" ns="local_costmap" />
+    <param name="local_costmap/width" value="10.0"/>
+    <param name="local_costmap/height" value="10.0"/>
+
+    <!-- static global costmap, static map provides size -->
+    <rosparam file="$(find robotics_lab2)/param/costmap_global_static.yaml" command="load" ns="global_costmap" unless="$(arg no_static_map)"/>
     
-    <rosparam file="$(find robotics_lab2)/param/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find robotics_lab2)/param/global_costmap_params.yaml" command="load" />
-
-    <rosparam file="$(find robotics_lab2)/param/move_base_params.yaml" command="load" />
-    <rosparam file="$(find robotics_lab2)/param/dwa_local_planner_params.yaml" command="load" />
+    <!-- global costmap with laser, for odom_navigation_demo -->
+    <rosparam file="$(find robotics_lab2)/param/costmap_global_laser.yaml" command="load" ns="global_costmap" if="$(arg no_static_map)"/>
+    <param name="global_costmap/width" value="100.0" if="$(arg no_static_map)"/>
+    <param name="global_costmap/height" value="100.0" if="$(arg no_static_map)"/>
 
     <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
     <remap from="odom" to="$(arg odom_topic)"/>
@@ -47,6 +65,10 @@
 
   <!--Localisation--> 
   <node name="odometry_publisher" pkg="robotics_lab2" type="odom_publisher.py" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">["steering_state"]</rosparam>
+  </node>
+   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
   <!-- AMCL -->
   <include file="$(find robotics_lab2)/launch/amcl.launch"/>
@@ -62,14 +84,14 @@
   </node>
 
   <!-- Rviz -->
-  <group if="$(arg open_rviz)"> 
+   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find robotics_lab2)/rviz/test_aut_car.rviz"/>
-  </group>
+  </group>-
 
   <!--Get goals and viapoints through Rviz 2D Nav Goal tool-->
-  <!--<node name="navigation_goals" pkg="robotics_lab2" type="navigation_goals.py" output="screen"/>-->
+  <!--node name="navigation_goals" pkg="robotics_lab2" type="navigation_goals.py" output="screen"/-->
 
-   <!-- Hector_trajectory_server -->
+  <!-- Hector_trajectory_server -->
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
     <param name="target_frame_name" type="string" value="/map" />
     <param name="source_frame_name" type="string" value="/base_link" />

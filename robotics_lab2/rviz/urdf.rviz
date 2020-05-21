@@ -87,6 +87,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        steering_point:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -108,6 +112,12 @@ Visualization Manager:
           Value: true
         front_wheel_link:
           Value: true
+        map:
+          Value: true
+        odom:
+          Value: true
+        steering_point:
+          Value: true
       Marker Scale: 0.5
       Name: TF
       Show Arrows: true
@@ -120,15 +130,19 @@ Visualization Manager:
               {}
             back_wheel_right_link:
               {}
-            front_wheel_link:
-              {}
+            steering_point:
+              front_wheel_link:
+                {}
+        map:
+          odom:
+            {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_footprint
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -159,9 +173,9 @@ Visualization Manager:
       Near Clip Distance: 0.00999999978
       Pitch: 0.785317302
       Position:
-        X: -1.59466636
-        Y: 0.0319383293
-        Z: 1.55016482
+        X: -25.3504524
+        Y: 0.515814543
+        Z: 25.3070278
       Target Frame: <Fixed Frame>
       Value: FPS (rviz)
       Yaw: 6.26281929
