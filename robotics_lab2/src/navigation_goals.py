@@ -11,9 +11,8 @@ from geometry_msgs.msg import PoseStamped, PoseArray
 from nav_msgs.msg import Path
 
 class MoveBaseClient():
-
 	def __init__(self):
-		rospy.init_node('move_base_client')
+		rospy.init_node('move_car_client')
 
 		self.goal = MoveBaseGoal()
 		self.next_goal = MoveBaseGoal()
@@ -50,7 +49,7 @@ class MoveBaseClient():
 
 	def pose_cb(self, pose):
 		#rospy.loginfo("\n" + str(pose))
-		if (pose not in self.goals) and (len(self.goals) < 4):
+		if (pose not in self.goals) and (len(self.goals) < 1):
 			pose.header.frame_id = "map"
 			pose.header.stamp = rospy.Time.now()
 			self.goals.append(pose)

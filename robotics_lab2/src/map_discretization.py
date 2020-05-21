@@ -96,6 +96,6 @@ if __name__ == '__main__':
 	rospy.init_node('map_discretizer')
 
 	while not rospy.is_shutdown():
-		turtlebot3_length = 0.306
+		turtlebot3_length = 1.508
 		disc = map_discretizer(turtlebot3_length)
 		rospy.spin()

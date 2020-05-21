@@ -1,0 +1,40 @@
+<launch>
+  <!-- Disable if running online and not from a bag/using gazebo simulation -->
+  <param name="use_sim_time" value="false"/>
+
+  <!-- Arguments -->
+  <arg name="model" default="$(find robotics_lab2)/urdf/robotCar.urdf"/>
+  <arg name="rvizconfig" default="$(find robotics_lab2)/rviz/urdf.rviz" />
+  
+  <arg name="map_file" default="$(find robotics_lab2)/maps/IST_map_disc.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- Car model config -->
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">["steering_state"]</rosparam>
+  </node><node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> 
+
+  <!-- Adding the my_map tf to the tf tree-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="my_map_to_map" args="0 0 0 0 0 0 1 /disc_map /map "/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- rviz -->
+  <!--<group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find robotics_lab2)/rviz/test_aut_car.rviz"/>
+  </group>-->
+
+  <!-- AMCL -->
+  <include file="$(find robotics_lab2)/launch/amcl.launch"/>
+
+  <!-- Call to global_localization service -->
+  <node name="global_localization" pkg="rosservice" type="rosservice"  args="call --wait /global_localization"/>
+
+  <!-- move_square - used to localize the robot before running move_base and giving the goals -->
+  <node name="move_square" pkg="robotics_lab2" type="move_square.py" output="screen"/>
+  
+</launch>
