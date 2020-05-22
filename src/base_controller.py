@@ -21,10 +21,10 @@ class Robot():
         rospy.loginfo("-I- %s started" % self.nodename)
 
         # Define publishers of velocity and angle
-        self.control_vel_pub = rospy.Publisher('control_cmd_vel', Twist, queue_size=50)
-        self.bWheels_pub = rospy.Publisher('bWheels', Float64, queue_size=50)
-        self.sWheel_vel_pub = rospy.Publisher('sVelWheel', Float64, queue_size=50)
-        self.sWheel_angle_pub = rospy.Publisher('sWheel', Float64, queue_size=50)
+        self.control_vel_pub = rospy.Publisher('control_cmd_vel', Twist, queue_size=1)
+        self.bWheels_pub = rospy.Publisher('bWheels', Float64, queue_size=1)
+        self.sWheel_vel_pub = rospy.Publisher('sVelWheel', Float64, queue_size=1)
+        self.sWheel_angle_pub = rospy.Publisher('sWheel', Float64, queue_size=1)
 
         # services
         self.begin_srv = rospy.Service("begin", Empty, self.begin)
@@ -76,6 +76,9 @@ class Robot():
 
         # subscrbe to max_vel
         rospy.Subscriber("max_vel", Float64, self.maxVelCallback)
+
+        # subscrbe to remaining energy
+        # rospy.Subscriber("max_vel", Float64, self.energyCallback)
         
         while not rospy.is_shutdown():
             
