@@ -10,11 +10,14 @@ from sensor_msgs.msg import JointState
 from copy import deepcopy
 
 
+def clamp(value, low, high):
+    return max(min(value, high), low)
+
 class OdometryNode:
     
     def __init__(self):
-        self.odom_pub = rospy.Publisher('odom', Odometry, queue_size=50)
-        self.steering_pub = rospy.Publisher('steering_state', JointState, queue_size=50)
+        self.odom_pub = rospy.Publisher('odom', Odometry, queue_size=1)
+        self.steering_pub = rospy.Publisher('steering_state', JointState, queue_size=1)
         self.odom_broadcaster = tf.TransformBroadcaster()
 
         rospy.Subscriber('control_cmd_vel', Twist, self.update_twists)
@@ -61,7 +64,7 @@ class OdometryNode:
         self.pose.x += dx
         self.pose.y += dy
         self.pose.theta += dtheta
-        self.steering_angle += dphi
+        self.steering_angle = clamp(self.steering_angle + dphi, pi/4, -pi/4)
         self.twist.angular.z = self.control_vel.linear.x * tan(self.steering_angle) / self.L
 
         # Create quaternion from theta

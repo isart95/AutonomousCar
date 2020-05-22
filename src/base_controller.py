@@ -115,23 +115,27 @@ class Robot():
 
     def getTheta(self):
 
-        transformation = False
+        # transformation = False
 
-        while not transformation:
-            try:
-                (_trans, quaternion)= self.tf_listener.lookupTransform("/base_footprint", "/map", rospy.Time(0))
-                self.th = euler_from_quaternion(quaternion)[2]
-                transformation = True
-            except (tf.LookupException, tf.ConnectivityException):
-                pass# rospy.loginfo("waiting for tf /base_footprint and /map to exist...")
+        # while not transformation:
+        try:
+            (_trans, quaternion)= self.tf_listener.lookupTransform("/base_footprint", "/map", rospy.Time(0))
+            self.th = euler_from_quaternion(quaternion)[2]
+            # transformation = True
+        except (tf.LookupException, tf.ConnectivityException):
+            pass# rospy.loginfo("waiting for tf /base_footprint and /map to exist...")
 
     def calculate_publish(self):
 
         self.bwheels = min(self.xVel, self.max_vel)
-
-        targetPhi = atan2(self.thVel * self.L, self.xVel)
-        Kp = 1
-        self.phiVel = Kp * (targetPhi - self.phi)
+        
+        if self.thVel == 0 or self.xVel == 0:
+            self.phiVel = 0
+        else:
+            radius = self.xVel / self.thVel
+            targetPhi = atan(self.L / radius)
+            Kp = 2
+            self.phiVel = Kp * (targetPhi - self.phi)
 
         # Test info:
         rospy.loginfo("\n \n --------------------------------------------------------")
@@ -153,6 +157,7 @@ class Robot():
 
 if __name__ == '__main__':
     try:
+        rospy.sleep(5) # need to be sure that the other nodes have started
         robot1 = Robot()
 
     except rospy.ROSInterruptException as e:
