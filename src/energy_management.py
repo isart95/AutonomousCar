@@ -75,7 +75,7 @@ class EnergyNode:
         print '====== drg: ', drag_energy
         print '====== acc_energy: ', acc_energy
 
-        self.total_energy -= (drag_energy + acc_energy + friction_losses)
+        self.total_energy -= (drag_energy + acc_energy)
 
         self.energy_pub.publish(self.total_energy)
         percent = self.initial_energy*100/self.total_energy
