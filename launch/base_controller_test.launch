@@ -12,7 +12,7 @@
   <!--Map server -->
   <arg name="map_file1" default="$(find robotics_lab2)/maps/IST_map_disc.yaml"/>
   <arg name="map_file2" default="$(find robotics_lab2)/maps/blank.yaml"/>
-  
+  <arg name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
   <!--Move_base Args-->
   <arg name="no_static_map" default="false"/>
   <arg name="cmd_vel_topic" default="/cmd_vel" />
@@ -78,6 +78,9 @@
      <param name="global_frame_id" value="map" />
      <param name="base_frame_id" value="base_footprint" />
   </node>
+
+
+
 
   <!-- Rviz -->
    <group if="$(arg open_rviz)"> 

@@ -54,46 +54,18 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        back_left_wheel:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
-          Value: true
-        back_right_wheel:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
-          Value: true
-        base_footprint:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
-        base_link:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
-          Value: true
-        front_wheel:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
-          Value: true
-        steering_point:
-          Alpha: 1
-          Show Axes: true
-          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz/TF
       Enabled: true
@@ -151,6 +123,52 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Head Diameter: 0.300000012
+      Head Length: 0.200000003
+      Length: 0.300000012
+      Line Style: Lines
+      Line Width: 0.0299999993
+      Name: Global Plan
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.0299999993
+      Shaft Diameter: 0.100000001
+      Shaft Length: 0.100000001
+      Topic: /move_base/GlobalPlanner/plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 0; 0; 255
+      Enabled: true
+      Head Diameter: 0.300000012
+      Head Length: 0.200000003
+      Length: 0.300000012
+      Line Style: Lines
+      Line Width: 0.0299999993
+      Name: Local Plan
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.0299999993
+      Shaft Diameter: 0.100000001
+      Shaft Length: 0.100000001
+      Topic: /move_base/TebLocalPlannerROS/local_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
       Color: 255; 170; 0
       Enabled: true
       Head Diameter: 0.300000012
@@ -158,7 +176,7 @@ Visualization Manager:
       Length: 0.300000012
       Line Style: Lines
       Line Width: 0.0299999993
-      Name: Planner Plan
+      Name: Waypoint trajectory
       Offset:
         X: 0
         Y: 0
@@ -169,6 +187,45 @@ Visualization Manager:
       Shaft Diameter: 0.100000001
       Shaft Length: 0.100000001
       Topic: /full_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 0; 0; 0
+      Enabled: false
+      Head Diameter: 0.150000006
+      Head Length: 0.100000001
+      Length: 0.300000012
+      Line Style: Lines
+      Line Width: 0.0299999993
+      Name: Robot Trajectory
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.0299999993
+      Shaft Diameter: 0.0500000007
+      Shaft Length: 0.100000001
+      Topic: /trajectory
+      Unreliable: false
+      Value: false
+    - Alpha: 1
+      Arrow Length: 0.5
+      Axes Length: 1
+      Axes Radius: 1
+      Class: rviz/PoseArray
+      Color: 0; 255; 0
+      Enabled: true
+      Head Length: 0.100000001
+      Head Radius: 0.300000012
+      Name: PoseArray
+      Shaft Length: 0.200000003
+      Shaft Radius: 0.100000001
+      Shape: Arrow (3D)
+      Topic: /waypoint_array
       Unreliable: false
       Value: true
     - Class: rviz/Group
@@ -253,45 +310,6 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: Local Map
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 0; 0; 0
-      Enabled: true
-      Head Diameter: 0.150000006
-      Head Length: 0.100000001
-      Length: 0.300000012
-      Line Style: Lines
-      Line Width: 0.0299999993
-      Name: Robot Trajectory
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Radius: 0.0299999993
-      Shaft Diameter: 0.0500000007
-      Shaft Length: 0.100000001
-      Topic: /trajectory
-      Unreliable: false
-      Value: true
-    - Alpha: 1
-      Arrow Length: 0.5
-      Axes Length: 1
-      Axes Radius: 1
-      Class: rviz/PoseArray
-      Color: 0; 255; 0
-      Enabled: true
-      Head Length: 0.100000001
-      Head Radius: 0.300000012
-      Name: PoseArray
-      Shaft Length: 0.200000003
-      Shaft Radius: 0.100000001
-      Shape: Arrow (3D)
-      Topic: /waypoint_array
-      Unreliable: false
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -325,11 +343,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Scale: 1.4141928
+      Scale: 56.01828
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 270.085236
-      Y: 261.391663
+      X: 326.976715
+      Y: 270.35849
     Saved: ~
 Window Geometry:
   Displays:
