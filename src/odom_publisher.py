@@ -64,7 +64,7 @@ class OdometryNode:
         self.pose.x += dx
         self.pose.y += dy
         self.pose.theta += dtheta
-        self.steering_angle = clamp(self.steering_angle + dphi, pi/4, -pi/4)
+        self.steering_angle = clamp(self.steering_angle + dphi, -pi/4, pi/4)
         self.twist.angular.z = self.control_vel.linear.x * tan(self.steering_angle) / self.L
 
         # Create quaternion from theta
