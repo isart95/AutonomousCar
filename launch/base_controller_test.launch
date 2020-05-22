@@ -66,6 +66,8 @@
 
   <node name="baseController" pkg="autonomous_car" type="base_controller.py" />
 
+  <node name="eventHandler" pkg="autonomous_car" type="events.py" />
+
    <!-- Run fake localization compatible with AMCL output -->
   <node pkg="fake_localization" type="fake_localization" name="fake_localization" clear_params="true" output="screen">
      <remap from="base_pose_ground_truth" to="odom" />
