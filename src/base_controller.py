@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import Twist, Vector3
 from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
+from std_srvs.srv import Empty, EmptyResponse
 import math
 from math import sin, cos, pi, atan, acos, atan2, sqrt
 import tf
@@ -25,8 +26,15 @@ class Robot():
         self.sWheel_vel_pub = rospy.Publisher('sVelWheel', Float64, queue_size=50)
         self.sWheel_angle_pub = rospy.Publisher('sWheel', Float64, queue_size=50)
 
+        # services
+        self.begin_srv = rospy.Service("begin", Empty, self.begin)
+        self.stop_srv = rospy.Service("stop", Empty, self.stop)
+
         # define transform listener for orientation (theta)
         self.tf_listener= TransformListener()
+
+        self.paused = False
+
 
         # orientation robot
         self.th = 0 # angle of the robot X axis in respect to map x axis
@@ -35,7 +43,8 @@ class Robot():
         # geometry robot
         self.L = 2.2 #From body_link to steering wheel
 
-        # veocity
+        # velocity
+        self.max_vel = 1
         self.xVel = 0
         self.yVel = 0
         self.thVel = 0
@@ -47,24 +56,46 @@ class Robot():
 
         self.motorCommand()
 
+    def begin(self, req):
+        self.paused = False
+        return EmptyResponse()
+
+    def stop(self, req):
+        self.paused = True
+        return EmptyResponse()
+
     def motorCommand(self):
 
         r = rospy.Rate(10)
 
+        # subscribe to twist message
+        rospy.Subscriber("cmd_vel", Twist, self.twistCallback)
+
+        # subscribe to twist message
+        rospy.Subscriber("steering_state", JointState, self.phiCallback)
+
+        # subscrbe to max_vel
+        rospy.Subscriber("max_vel", Float64, self.maxVelCallback)
+        
         while not rospy.is_shutdown():
-            # subscribe to twist message
-            rospy.Subscriber("cmd_vel", Twist, self.twistCallback)
+            
+            if self.paused:
+                self.control_vel_pub.publish(
+                    Twist(
+                        Vector3(0, 0, 0),
+                        Vector3(0, 0, 0))
+                )
+            else:
+                #get orientation robot
+                self.getTheta()
 
-            # subscribe to twist message
-            rospy.Subscriber("steering_state", JointState, self.phiCallback)
-
-            #get orientation robot
-            self.getTheta()
-
-            # calculate the commands and publish them
-            self.calculate_publish()
+                # calculate the commands and publish them
+                self.calculate_publish()
 
             r.sleep()
+
+    def maxVelCallback(self, msg):
+        self.max_vel = msg.data
 
     def phiCallback(self, msg):
         self.phi = msg.position[0]
@@ -96,7 +127,7 @@ class Robot():
 
     def calculate_publish(self):
 
-        self.bwheels = self.xVel
+        self.bwheels = min(self.xVel, self.max_vel)
 
         targetPhi = atan2(self.thVel * self.L, self.xVel)
         Kp = 1
@@ -107,6 +138,7 @@ class Robot():
         rospy.loginfo("The x,y velocities are: %s and %s", self.xVel, self.yVel)
         rospy.loginfo("The angular velocity is: %s", self.thVel)
         rospy.loginfo("The velocity of the motors is: %s and the steering angle: %s", self.bwheels, self.phi)
+
 
         # Publish motor commands
         self.control_vel_pub.publish(
