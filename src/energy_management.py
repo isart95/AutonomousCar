@@ -2,35 +2,43 @@
 import rospy
 from nav_msgs.msg import Odometry
 from copy import deepcopy
-from geometry_msgs.msg import Float64
+from std_msgs.msg import Float64
+from math import sqrt
 
 class EnergyNode:
 
     def __init__(self):
         self.energy_pub = rospy.Publisher('energy', Float64, queue_size=50 )
-        self.prev_time = 0
+        self.prev_time = rospy.Time.now()
         self.prev_vel = 0
         self.acceleration = 0
-        self.new_time = 0
+        self.new_time = rospy.Time.now()
         self.new_vel = 0
 
-        self.initial_energy = 1000
-        self.total_energy = initial_energy
+        # LiFePO4 batteries have 400000 j/kg. Lets suppose 10 kg of battery
+        self.initial_energy = 400000 * 10
+        self.total_energy = deepcopy(self.initial_energy)
 
          # constants:
         self.mass = 855
         self.g = 9.81
-        self.air_dens = 1.225
-        self.A = 1.92  # cross-section car, ignoring wheels
-        self.Cd = 0.6 # aerodynamic coefficient (from a Hummer H2)
+        self.air_dens = 1.225 # kg/m**3
+        self.cross_section = 1.92  # cross-section car, ignoring wheels
+        self.cd = 0.6 # aerodynamic coefficient (from a Hummer H2)
+        self.odom = Odometry()
 
-        rospy.Subscriber('odom'. Odometry, self.callback)
+        rospy.Subscriber("odom", Odometry, self.callback)
 
     def calculate(self):
-        self.odom = deepcopy(msg)
-        self.time_step = self.new_time - elf.prev_time
-        self.new_vel = sqrt(odom.velocity.x**2 + odom.velocity.y**2)
-        self.acceleration = (self.new_vel-self.prev_vel)/(self.time_step)
+        self.time_step = self.new_time.secs - self.prev_time.secs + \
+                        10**(-9) * (self.new_time.nsecs - self.prev_time.nsecs)
+
+        self.new_vel = sqrt(self.odom.twist.twist.linear.x**2 + self.odom.twist.twist.linear.y**2)
+
+        if self.time_step > 0:
+            self.acceleration = (self.new_vel-self.prev_vel)/(self.time_step)
+        else:
+            self.acceleration = 0
 
         self.energy()
 
@@ -40,27 +48,40 @@ class EnergyNode:
 
 
     def energy(self):
-        # integrating drag_energy formula = integ(0.5 * Cd * airdens * A * v³ * t
+        # integrating drag_energy formula = integ(0.5 * Cd * airdens * A * v**3 * t
         v1 = self.prev_vel
-        t1 = self.prev_time
+        t1 = self.prev_time.secs + self.prev_time.nsecs*10**(-9)
         v2 = self.new_vel
-        t2 = self.new_time
+        t2 = self.new_time.secs + self.prev_time.nsecs*10**(-9)
         a = self.acceleration
+        v_avg = (v2-v1)/2
 
-        drag_energy = 0.5 * self.Cd * self.air_dens * self.A * \
-                    ((v1**3 * (t2**2-t1**2)/2) + (3*v1**2*a*(t2**3-t1**3)/3) \
-                    (3*v1*a**2*(t2**4-t1**4)/4) + (a**3*(t2**5-t1**5)/5))
+        drag_energy = 0.5 * self.cd * self.air_dens * self.cross_section * \
+                    v_avg**3 * self.time_step
 
-        acc_energy = self.mass * self.acceleration * ((v1*(t2**2-t1**2)/2) + \
-                    (a * (t2**3-t1**3)/3))
+        acc_energy = 0.5 * self.mass *(v2**2-v1**2)
 
-        self.total_energy -= (drag_energy + acc_energy)
+        if v_avg > 0:
+            floor_friction = 300
+        else:
+            floor_friction = 0
+
+        motor_lost = 10
+
+        print '====== v1: ', v1
+        print '====== v2: ', v2
+        print '====== t1: ', t1
+        print '====== t2: ', t2
+        print '====== drg: ', drag_energy
+        print '====== acc_energy: ', acc_energy
+
+        self.total_energy -= (drag_energy + acc_energy + friction_losses)
 
         self.energy_pub.publish(self.total_energy)
         percent = self.initial_energy*100/self.total_energy
 
-        print ('At time %s the energy is at the %s percent (%s out of %s Joules)',
-                self.new_time, percent, self.total_energy, self.initial_energy)
+        print('At time %d the energy is at the %d percent (%d out of %d kJ)' \
+                % (self.new_time.secs, percent, self.total_energy/1000, self.initial_energy/1000))
 
     def callback(self, msg):
         self.odom = deepcopy(msg)
