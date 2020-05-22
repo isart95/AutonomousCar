@@ -84,7 +84,7 @@ class Robot():
         rospy.Subscriber("max_vel", Float64, self.maxVelCallback)
 
         # subscrbe to remaining energy
-        # rospy.Subscriber("max_vel", Float64, self.energyCallback)
+        rospy.Subscriber("max_vel", Float64, self.energyCallback)
         
         while not rospy.is_shutdown():
             if self.remaining_energy <= 0:
