@@ -154,8 +154,8 @@ class Robot():
             radius = self.xVel / self.thVel
             targetPhi = atan(self.L / radius)
             Kp = 2
-            self.phiVel = Kp * (targetPhi - self.phi)
-            # self.phiVel = Kp * (targetPhi - self.phi)**2 * (-1 if targetPhi < self.phi else 1) 
+            # self.phiVel = Kp * (targetPhi - self.phi)
+            self.phiVel = Kp * (targetPhi - self.phi)**2 * (-1 if targetPhi < self.phi else 1) 
 
         # Test info:
         rospy.loginfo("\n \n --------------------------------------------------------")
