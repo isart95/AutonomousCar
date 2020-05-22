@@ -1,5 +1,5 @@
-image: /home/veronica/catkin_ws/src/robotics_lab2/maps/blank.pgm
-resolution: 1.508000
+image: IST_map_disc_bigger.pgm
+resolution: 3.332000
 origin: [0.000000, 0.000000, 0.000000]
 negate: 0
 occupied_thresh: 0.65

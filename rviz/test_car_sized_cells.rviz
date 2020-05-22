@@ -33,7 +33,7 @@ Visualization Manager:
   Class: ""
   Displays:
     - Alpha: 0.5
-      Cell Size: 1.50800002
+      Cell Size: 3.33200002
       Class: rviz/Grid
       Color: 0; 0; 0
       Enabled: true
@@ -47,7 +47,7 @@ Visualization Manager:
         Y: 0.0500000007
         Z: 0
       Plane: XY
-      Plane Cell Count: 600
+      Plane Cell Count: 350
       Reference Frame: map
       Value: true
     - Alpha: 0.699999988
@@ -85,16 +85,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 879.049316
+      Distance: 1028.27222
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.38784793
-        Y: 0.0390808098
-        Z: -1.65716541
+        X: 85.6366272
+        Y: 77.4370499
+        Z: -2.12176275
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false

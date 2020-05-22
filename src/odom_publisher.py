@@ -4,7 +4,7 @@ from math import sin, cos, tan, pi
 import rospy
 import tf
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Pose2D, Point, Pose, Quaternion, Twist, Vector3
+from geometry_msgs.msg import Pose2D, Point, Pose, PoseWithCovarianceStamped, Quaternion, Twist, Vector3
 from std_msgs.msg import String, Header
 from sensor_msgs.msg import JointState
 from copy import deepcopy
@@ -18,8 +18,10 @@ class OdometryNode:
         self.odom_broadcaster = tf.TransformBroadcaster()
 
         rospy.Subscriber('control_cmd_vel', Twist, self.update_twists)
+        rospy.Subscriber('initialpose', PoseWithCovarianceStamped, self.update_init_pose)
         
-        self.pose = Pose2D(220, 183.41, 1.57075)
+        self.quat = [0.0, 0.0, 0.0, 0.0]
+        self.pose = Pose2D()
         self.twist = Twist()
         self.steering_angle = 0
         self.control_vel = Twist()
@@ -27,6 +29,18 @@ class OdometryNode:
         # geometry robot
         self.L = 2.2 #From body_link to steering wheel
     
+    def update_init_pose(self, msg):
+        self.pose.x = msg.pose.pose.position.x
+        self.pose.y = msg.pose.pose.position.y
+        
+        self.quat[0] = msg.pose.pose.orientation.x
+        self.quat[1] = msg.pose.pose.orientation.y
+        self.quat[2] = msg.pose.pose.orientation.z
+        self.quat[3] = msg.pose.pose.orientation.w
+        
+        theta = tf.transformations.euler_from_quaternion([self.quat[0], self.quat[1], self.quat[2], self.quat[3]])
+        self.pose.theta = theta[2]
+
     def update_twists(self, msg):
         self.control_vel = deepcopy(msg)
         self.twist = deepcopy(msg)

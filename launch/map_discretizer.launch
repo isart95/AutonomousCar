@@ -3,7 +3,7 @@
   <param name="use_sim_time" value="false"/>
 
   <!-- Arguments -->
-  <arg name="map_file" default="$(find autonomous_car)/maps/blank.yaml"/>
+  <arg name="map_file" default="$(find autonomous_car)/maps/IST_map_b_w_scale_bigger.yaml"/>
   <arg name="open_rviz" default="true"/>
 
   <!-- Adding the my_map tf to the tf tree-->
