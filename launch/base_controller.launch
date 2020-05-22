@@ -13,7 +13,7 @@
   
   <!--Move_base Args-->
   <arg name="no_static_map" default="false"/>
-  <arg name="cmd_vel_topic" default="/control_cmd_vel" />
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
   <arg name="odom_topic" default="/odom" />
   <arg name="move_forward_only" default="false"/>
 
@@ -77,6 +77,10 @@
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
   <node name="baseController" pkg="autonomous_car" type="base_controller.py" />
+
+  <node name="eventHandler" pkg="autonomous_car" type="events.py" />
+
+  <node name="energyManager" pkg="autonomous_car" type="energy_management.py" />
 
    <!-- Run fake localization compatible with AMCL output -->
   <node pkg="fake_localization" type="fake_localization" name="fake_localization" clear_params="true" output="screen">

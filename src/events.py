@@ -10,8 +10,8 @@ if __name__ == '__main__':
         random.seed(0)
         rospy.init_node('event_handler', anonymous=True)
         max_vel_pub = rospy.Publisher('max_vel', Float64, queue_size=1)
-        high_vel = 1
-        low_vel = 0.25
+        high_vel = 20.778
+        low_vel = 10
         cur_vel = high_vel
         
         while not rospy.is_shutdown():
