@@ -50,6 +50,9 @@ class Robot():
         self.thVel = 0
         self.phiVel = 0
 
+        # energy
+        self.remaining_energy = float('inf') # assume infinite energy until a new value is given
+
         # motor velocities
         self.bwheels = 0
         self.swheel = 0
@@ -74,11 +77,21 @@ class Robot():
         # subscribe to twist message
         rospy.Subscriber("steering_state", JointState, self.phiCallback)
 
+        # subscrbe to remaining energy
+        rospy.Subscriber("energy", Float64, self.energyCallback)
+
         # subscrbe to max_vel
         rospy.Subscriber("max_vel", Float64, self.maxVelCallback)
         
         while not rospy.is_shutdown():
-            
+            if self.remaining_energy <= 0:
+                self.control_vel_pub.publish(
+                    Twist(
+                        Vector3(0, 0, 0),
+                        Vector3(0, 0, 0))
+                )
+                rospy.signal_shutdown("Out of energy!!!")
+
             if self.paused:
                 self.control_vel_pub.publish(
                     Twist(
@@ -93,6 +106,9 @@ class Robot():
                 self.calculate_publish()
 
             r.sleep()
+
+    def energyCallback(self, msg):
+        self.remaining_energy = msg.data
 
     def maxVelCallback(self, msg):
         self.max_vel = msg.data
@@ -136,6 +152,7 @@ class Robot():
             targetPhi = atan(self.L / radius)
             Kp = 2
             self.phiVel = Kp * (targetPhi - self.phi)
+            # self.phiVel = Kp * (targetPhi - self.phi)**2 * (-1 if targetPhi < self.phi else 1) 
 
         # Test info:
         rospy.loginfo("\n \n --------------------------------------------------------")
