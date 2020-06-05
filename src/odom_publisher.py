@@ -7,7 +7,6 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Pose2D, Point, Pose, PoseWithCovarianceStamped, Quaternion, Twist, Vector3
 from std_msgs.msg import String, Header
 from sensor_msgs.msg import JointState
-import numpy as np
 from copy import deepcopy
 
 
@@ -76,20 +75,6 @@ class OdometryNode:
             (self.pose.x, self.pose.y, 0),
             odom_quat,
             current_time,
-            "base_link",
-            "odom"
-        )
-
-        # add noise to tf for localisation
-        noise_x = self.pose.x + np.random.normal(0.0, 0.2)
-        noise_y = self.pose.y + np.random.normal(0.0, 0.2)
-        noise_theta = self.pose.theta + np.random.normal(0.0, 0.2)
-        noise_phi = self.steering_angle + np.random.normal(0.0, 0.2)
-        odom_noise_quat = tf.transformations.quaternion_from_euler(0, 0, noise_theta)
-        self.odom_broadcaster.sendTransform(
-            (noise_x, noise_y, 0),
-            odom_noise_quat,
-            current_time,
             "base_footprint",
             "odom"
         )
@@ -107,7 +92,7 @@ class OdometryNode:
         steering_state = JointState()
         steering_state.header = Header()
         steering_state.name = ['base_to_steering_point']
-        steering_state.position = [noise_phi]
+        steering_state.position = [self.steering_angle]
         steering_state.velocity = []
         steering_state.effort = []
         self.steering_pub.publish(steering_state)
@@ -118,7 +103,7 @@ class OdometryNode:
         odom.header.frame_id = "odom"
 
         # set the position
-        odom.pose.pose = Pose(Point(noise_x, noise_y, 0.), Quaternion(*odom_noise_quat))
+        odom.pose.pose = Pose(Point(self.pose.x, self.pose.y, 0.), Quaternion(*odom_quat))
 
         # set the velocity
         odom.child_frame_id = "base_footprint"

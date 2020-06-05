@@ -31,10 +31,12 @@ class Robot():
         self.stop_srv = rospy.Service("stop", Empty, self.stop)
 
         # define transform listener for orientation (theta)
-        self.tf_listener= TransformListener()
+        self.tf_listener = TransformListener()
 
         self.paused = False
 
+        self.rotation = [0.0, 0.0, 0.0, 0.0]
+        self.translaton = [0.0, 0.0, 0.0]
 
         # orientation robot
         self.th = 0 # angle of the robot X axis in respect to map x axis
@@ -85,7 +87,8 @@ class Robot():
 
         # subscrbe to remaining energy
         rospy.Subscriber("max_vel", Float64, self.energyCallback)
-        
+
+        rate = rospy.Rate(1.0) #CHANGED PARAMETER
         while not rospy.is_shutdown():
             if self.remaining_energy <= 0:
                 self.control_vel_pub.publish(
@@ -102,8 +105,15 @@ class Robot():
                         Vector3(0, 0, 0))
                 )
             else:
+                target_frame = "map"
+                source_frame = "base_footprint"
+                if self.tf_listener.frameExists(target_frame) and self.tf_listener.frameExists(source_frame):
+                    #lookup transform from laser frame to odom frame
+                    t = self.tf_listener.getLatestCommonTime(target_frame, source_frame)
+                    self.translation, self.rotation = self.tf_listener.lookupTransform(target_frame, source_frame, t)
+                    rate.sleep()
                 #get orientation robot
-                self.getTheta()
+                self.getTheta(self.rotation)
 
                 # calculate the commands and publish them
                 self.calculate_publish()
@@ -132,18 +142,10 @@ class Robot():
         # self.thVel = (tan(phi)/L)*self.bwheels
         # self.phiVel = (identity)
 
-    def getTheta(self):
+    def getTheta(self, quaternion):
 
-        # transformation = False
-
-        # while not transformation:
-        try:
-            (_trans, quaternion)= self.tf_listener.lookupTransform("/base_footprint", "/map", rospy.Time(0))
-            self.th = euler_from_quaternion(quaternion)[2]
-            # transformation = True
-        except (tf.LookupException, tf.ConnectivityException):
-            pass# rospy.loginfo("waiting for tf /base_footprint and /map to exist...")
-
+        self.th = euler_from_quaternion(quaternion)[2]
+            
     def calculate_publish(self):
 
         self.bwheels = min(self.xVel, self.max_vel)
@@ -154,7 +156,7 @@ class Robot():
             radius = self.xVel / self.thVel
             targetPhi = atan(self.L / radius)
             Kp = 2
-            # self.phiVel = Kp * (targetPhi - self.phi)
+            #self.phiVel = Kp * (targetPhi - self.phi)
             self.phiVel = Kp * (targetPhi - self.phi)**2 * (-1 if targetPhi < self.phi else 1) 
 
         # Test info:

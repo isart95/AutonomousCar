@@ -41,9 +41,9 @@
     <rosparam file="$(find autonomous_car)/param/teb_local_planner_tutorials/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find autonomous_car)/param/teb_local_planner_tutorials/teb_local_planner_params.yaml" command="load" />
 
-    <param name="planner_frequency" value="1.0" />
-    <param name="planner_patience" value="5.0" />
-    <param name="controller_frequency" value="5.0" />
+    <param name="planner_frequency" value="5.0" />
+    <param name="planner_patience" value="15.0" />
+    <param name="controller_frequency" value="2.0" />
     <param name="controller_patience" value="15.0" />
 
     <param name="clearing_rotation_allowed" value="false" /> <!-- Our carlike robot is not able to rotate in place -->
@@ -100,7 +100,7 @@
   <!-- Hector_trajectory_server -->
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
     <param name="target_frame_name" type="string" value="/map" />
-    <param name="source_frame_name" type="string" value="/base_footprint" />
+    <param name="source_frame_name" type="string" value="/base_link" />
     <param name="trajectory_update_rate" type="double" value="4" />
     <param name="trajectory_publish_rate" type="double" value="0.25" />
   </node>
